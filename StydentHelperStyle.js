@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Student Helper Style
 // @namespace    https://github.com/AbrikosV/StudentHelperStyle
-// @version      1.4.0
+// @version      1.5.0
 // @description  Улучшенный интерфейс расписания для студентов колледжа
-// @author       AbrikosV 
+// @author       AbrikosV
 // @match        https://system.fgoupsk.ru/student/*
 // @grant        none
 // @run-at       document-end
@@ -16,7 +16,7 @@
     'use strict';
 
     // === 🛑 Защита от дублей и запуска на странице входа ===
-    const SCRIPT_ID = 'student-helper-stylett-v1.4';
+    const SCRIPT_ID = 'student-helper-stylett-v1.5';
     if (document.getElementById(SCRIPT_ID)) return;
 
     // На странице входа — только "регистрация" и "вход"
@@ -43,34 +43,37 @@
             line-height: 1.5 !important;
             margin: 0 !important;
             padding: 0 !important;
+            overflow-x: hidden !important;
         }
 
         .shs-enhanced > :not(script):not(style):not(head):not(meta):not(title) {
             max-width: 1200px !important;
-            margin: 20px auto !important;
-            padding: 0 16px !important;
+            margin: 16px auto !important;
+            padding: 0 12px !important;
         }
 
         /* ===== ФОРМА ДАТЫ ===== */
         .shs-enhanced .form-inline {
             display: flex !important;
+            flex-wrap: wrap !important;
             align-items: center !important;
-            gap: 8px !important;
-            padding: 12px 16px !important;
+            gap: 6px 8px !important;
+            padding: 10px 12px !important;
             background: white !important;
             border: 1px solid #e0e0e0 !important;
             border-radius: 8px !important;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.03) !important;
-            margin: 0 0 20px 0 !important;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+            margin: 0 0 16px 0 !important;
         }
 
         .shs-enhanced input[name="d"] {
-            flex: 1 !important;
-            padding: 8px 12px !important;
+            flex: 1 1 180px !important;
+            padding: 8px 10px !important;
             border: 1px solid #ced4da !important;
             border-radius: 6px !important;
             font-size: 14px !important;
             color: #495057 !important;
+            min-width: 0 !important;
         }
 
         .shs-enhanced input[name="d"]:focus {
@@ -87,37 +90,36 @@
             border-radius: 6px !important;
             cursor: pointer !important;
             transition: background 0.2s !important;
+            white-space: nowrap !important;
         }
 
         .shs-enhanced .btn-primary[type="submit"]:hover {
             background: #0056b3 !important;
         }
 
-        /* ===== КНОПКИ ДАТЫ ===== */
         .shs-enhanced .date-controls {
             display: inline-flex !important;
-            gap: 6px !important;
-            margin-left: 8px !important;
+            gap: 4px !important;
+            margin-left: 0 !important;
+            order: 3 !important;
         }
 
-        .shs-enhanced .date-controls button {
-            width: 36px !important;
-            height: 36px !important;
-            border: 1px solid #ced4da !important;
-            border-radius: 6px !important;
-            background: white !important;
-            color: #495057 !important;
-            font-weight: bold !important;
-            cursor: pointer !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            transition: all 0.2s ease !important;
-        }
-
-        .shs-enhanced .date-controls button:hover {
-            background: #f1f3f5 !important;
-            transform: translateY(-1px);
+        @media (max-width: 480px) {
+            .shs-enhanced .form-inline {
+                flex-direction: column !important;
+                align-items: stretch !important;
+            }
+            .shs-enhanced .date-controls {
+                order: 2 !important;
+                justify-content: center !important;
+                margin-top: 6px !important;
+            }
+            .shs-enhanced .btn-primary[type="submit"] {
+                order: 3 !important;
+                align-self: center !important;
+                width: 100% !important;
+                margin-top: 6px !important;
+            }
         }
 
         /* ===== ТАБЛИЦА ===== */
@@ -126,18 +128,22 @@
             border-collapse: collapse !important;
             border-radius: 8px !important;
             overflow: hidden !important;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04) !important;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05) !important;
             background: white !important;
-            margin: 20px 0 !important;
+            margin: 16px 0 !important;
+            display: block !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch !important;
         }
 
         .shs-enhanced table.table thead th {
             background: #f8f9fa !important;
             color: #495057 !important;
             font-weight: 600 !important;
-            padding: 12px 16px !important;
+            padding: 10px 12px !important;
             text-align: left !important;
             border-bottom: 2px solid #dee2e6 !important;
+            white-space: nowrap !important;
         }
 
         .shs-enhanced table.table tbody tr {
@@ -153,18 +159,59 @@
         }
 
         .shs-enhanced table.table td {
-            padding: 12px 16px !important;
+            padding: 10px 12px !important;
             color: #212529 !important;
             vertical-align: top !important;
+            font-size: 0.95rem !important;
+        }
+
+        /* ===== МОБИЛЬНЫЙ ВИД ТАБЛИЦЫ ДИСЦИПЛИН (стек-карточки) ===== */
+        @media (max-width: 768px) {
+            .shs-enhanced table.table td,
+            .shs-enhanced table.table th {
+                padding: 8px 10px !important;
+                font-size: 0.9rem !important;
+            }
+
+            .shs-enhanced #disciplines-table td:first-child::before {
+                content: "№ ";
+                font-weight: bold;
+                color: #6c757d;
+            }
+            .shs-enhanced #disciplines-table td:nth-child(2)::before {
+                content: "Дисциплина: ";
+                font-weight: bold;
+                color: #6c757d;
+            }
+            .shs-enhanced #disciplines-table td:nth-child(3)::before {
+                content: "Преподаватель: ";
+                font-weight: bold;
+                color: #6c757d;
+            }
+            .shs-enhanced #disciplines-table td {
+                display: block !important;
+                padding-left: 60px !important;
+                text-indent: -45px !important;
+            }
+            .shs-enhanced #disciplines-table tr {
+                display: block !important;
+                margin-bottom: 0.8rem !important;
+                border: 1px solid #eee !important;
+                padding: 8px !important;
+                border-radius: 6px !important;
+            }
+            .shs-enhanced #disciplines-table tbody tr:hover {
+                background: #f9f9f9 !important;
+            }
         }
 
         /* ===== ЗАГОЛОВКИ ===== */
         .shs-enhanced h2 {
-            font-size: 1.4rem !important;
+            font-size: 1.3rem !important;
             font-weight: 600 !important;
             color: #2c3e50 !important;
-            margin: 24px 0 12px 0 !important;
-            padding-bottom: 6px !important;
+            margin: 20px 0 10px 0 !important;
+            padding-bottom: 5px !important;
             border-bottom: 2px solid #007bff !important;
         }
 
@@ -173,12 +220,12 @@
             display: flex !important;
             align-items: center !important;
             gap: 8px !important;
-            font-size: 1.3rem !important;
+            font-size: 1.2rem !important;
             font-weight: 600 !important;
             color: #2c3e50 !important;
-            margin: 24px 0 12px 0 !important;
+            margin: 20px 0 10px 0 !important;
             cursor: pointer !important;
-            padding: 8px 12px !important;
+            padding: 8px 10px !important;
             background: #f8f9fa !important;
             border-radius: 8px !important;
             transition: background 0.2s !important;
@@ -218,13 +265,13 @@
             background: white !important;
             border: 1px solid #dee2e6 !important;
             border-radius: 8px !important;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
-            padding: 12px !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+            padding: 10px !important;
             z-index: 9999;
             display: none;
-            min-width: 200px;
-            font-size: 14px;
-            font-weight: 500;
+            min-width: 180px;
+            max-width: 90vw !important;
+            font-size: 13px !important;
         }
 
         .shs-enhanced .settings-menu .header {
@@ -335,7 +382,6 @@
             background: #2a2a2a !important;
         }
 
-        /* Тёмная тема — меню */
         .shs-enhanced [data-theme="dark"] .settings-menu {
             background: #1e1e1e !important;
             border-color: #333 !important;
@@ -353,6 +399,35 @@
 
         .shs-enhanced [data-theme="dark"] .settings-menu .switch.checked {
             background: #4a86e8 !important;
+        }
+
+        /* ===== МОБИЛЬНЫЕ УСТРОЙСТВА: ДОП УЛУЧШЕНИЯ ===== */
+        @media (max-width: 480px) {
+            .shs-enhanced body {
+                font-size: 15px !important;
+            }
+            .shs-enhanced .menu-toggle {
+                font-size: 1.3rem !important;
+            }
+            .shs-enhanced .disciplines-header {
+                font-size: 1.25rem !important;
+                padding: 10px !important;
+            }
+            .shs-enhanced .settings-menu {
+                font-size: 14px !important;
+                padding: 12px !important;
+            }
+            .shs-enhanced .settings-menu .switch {
+                width: 44px !important;
+                height: 22px !important;
+            }
+            .shs-enhanced .settings-menu .switch::before {
+                width: 18px !important;
+                height: 18px !important;
+            }
+            .shs-enhanced .settings-menu .switch.checked::before {
+                transform: translateX(22px) !important;
+            }
         }
     `;
     document.head.appendChild(style);
@@ -392,36 +467,31 @@
     // === МОДУЛИ ===
     const modules = {
         uiCleanup() {
-    // Удаляем "Расписание" и <hr>
-    const h2Schedule = DOM.h2s.find(h => /расписан/i.test(h.textContent));
-    if (h2Schedule) {
-        h2Schedule.remove();
-        const nextHR = h2Schedule.nextElementSibling;
-        if (nextHR?.tagName === 'HR') nextHR.remove();
-    }
-    // Удаляем "полное расписание"
-    const fullLink = $('a[href*="page=r"]');
-    if (fullLink) fullLink.remove();
+            // Удаляем "Расписание" и <hr>
+            const h2Schedule = DOM.h2s.find(h => /расписан/i.test(h.textContent));
+            if (h2Schedule) {
+                h2Schedule.remove();
+                const nextHR = h2Schedule.nextElementSibling;
+                if (nextHR?.tagName === 'HR') nextHR.remove();
+            }
+            // Удаляем "полное расписание"
+            const fullLink = $('a[href*="page=r"]');
+            if (fullLink) fullLink.remove();
 
-    // ✅ ИСПРАВЛЕНИЕ: обновляем ссылку "Группа"
-    const groupLink = $('a[href*="act=group"]:not([href*="act2="])');
-    if (groupLink) {
-        try {
-            const url = new URL(groupLink.href, location.origin);
-            // Убеждаемся, что в URL есть m=... (обычно есть)
-            // Просто добавляем/заменяем act2=prog
-            url.searchParams.set('act2', 'prog');
+            // ✅ ФИКС: Обновляем ссылку "Группа" → act2=prog
+            const groupLink = $('a[href*="act=group"]:not([href*="act2="])');
+            if (groupLink) {
+                try {
+                    const url = new URL(groupLink.href, location.origin);
+                    url.searchParams.set('act2', 'prog');
+                    groupLink.href = url.toString();
+                    groupLink.title = 'Программа обучения группы';
+                } catch (e) {
+                    console.warn('[StudentHelperStyleTT] Не удалось обновить ссылку "Группа":', e);
+                }
+            }
+        },
 
-            groupLink.href = url.toString();
-            groupLink.title = 'Программа обучения группы';
-            // (опционально) можно заменить текст, но лучше оставить "Группа"
-            // groupLink.textContent = 'Программа группы';
-        } catch (e) {
-            console.warn('[StudentHelperStyleTT] Не удалось обновить ссылку "Группа":', e);
-        }
-    }
-},
-        
         dateNavigation() {
             const ctrl = document.createElement('div');
             ctrl.className = 'date-controls';
@@ -576,17 +646,25 @@
 
                 $('#theme-row', this.menu).onclick = toggleTheme;
 
-                // Показ/скрытие
+                // Показ/скрытие с адаптивным позиционированием ✅
                 gearLink.onclick = e => {
                     e.preventDefault();
-                    const show = this.menu.style.display !== 'block';
-                    this.menu.style.display = show ? 'block' : 'none';
+                    const wasVisible = this.menu.style.display === 'block';
+                    this.menu.style.display = wasVisible ? 'none' : 'block';
 
-                    if (show) {
+                    if (!wasVisible) {
                         const rect = gearLink.getBoundingClientRect();
-                        this.menu.style.top = `${rect.bottom + 6}px`;
-                        this.menu.style.left = `${rect.left - 40}px`; // смещение влево
-                        this.menu.style.transform = 'translateX(-50%)';
+                        const menuRect = this.menu.getBoundingClientRect();
+
+                        let left = rect.left + rect.width / 2 - menuRect.width / 2;
+                        if (left < 8) left = 8;
+                        if (left + menuRect.width > window.innerWidth - 8) {
+                            left = window.innerWidth - menuRect.width - 8;
+                        }
+
+                        this.menu.style.left = `${left}px`;
+                        this.menu.style.top = `${rect.bottom + 4}px`;
+                        this.menu.style.transform = 'none';
                     }
                 };
 

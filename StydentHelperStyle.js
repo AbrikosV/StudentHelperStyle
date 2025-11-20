@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Student Helper Style
 // @namespace    https://github.com/AbrikosV/StudentHelperStyle
-// @version      1.5.0
+// @version      1.5.1
 // @description  Улучшенный интерфейс расписания для студентов колледжа
 // @author       AbrikosV
 // @match        https://system.fgoupsk.ru/student/*
@@ -16,10 +16,9 @@
     'use strict';
 
     // === 🛑 Защита от дублей и запуска на странице входа ===
-    const SCRIPT_ID = 'student-helper-stylett-v1.5';
+    const SCRIPT_ID = 'student-helper-stylett-v1.5.1';
     if (document.getElementById(SCRIPT_ID)) return;
 
-    // На странице входа — только "регистрация" и "вход"
     if (
         document.body.textContent.includes('регистрация') &&
         document.body.textContent.includes('вход') &&
@@ -50,6 +49,12 @@
             max-width: 1200px !important;
             margin: 16px auto !important;
             padding: 0 12px !important;
+        }
+
+        @media (min-width: 1440px) {
+            .shs-enhanced > :not(script):not(style):not(head):not(meta):not(title) {
+                max-width: 1400px !important;
+            }
         }
 
         /* ===== ФОРМА ДАТЫ ===== */
@@ -122,7 +127,7 @@
             }
         }
 
-        /* ===== ТАБЛИЦА ===== */
+        /* ===== ОБЩИЕ СТИЛИ ТАБЛИЦ ===== */
         .shs-enhanced table.table {
             width: 100% !important;
             border-collapse: collapse !important;
@@ -165,39 +170,68 @@
             font-size: 0.95rem !important;
         }
 
-        /* ===== МОБИЛЬНЫЙ ВИД ТАБЛИЦЫ ДИСЦИПЛИН (стек-карточки) ===== */
-        @media (max-width: 768px) {
+        /* ===== 🖥️ БОЛЬШИЕ ЭКРАНЫ (≥1440px) ===== */
+        @media (min-width: 1440px) {
             .shs-enhanced table.table td,
             .shs-enhanced table.table th {
-                padding: 8px 10px !important;
-                font-size: 0.9rem !important;
+                padding: 12px 14px !important;
+                font-size: 1.05rem !important;
+            }
+            .shs-enhanced table.table thead th {
+                padding: 12px 14px !important;
+                font-size: 1.1rem !important;
+            }
+        }
+
+        /* ===== 📱 ТЕЛЕФОНЫ (≤480px): ПЕРВАЯ ТАБЛИЦА (расписание) — КОМПАКТНЕЕ ===== */
+        @media (max-width: 480px) {
+            .shs-enhanced #sched-table td,
+            .shs-enhanced #sched-table th {
+                padding: 6px 8px !important;
+                font-size: 0.92rem !important;
             }
 
+            /* Сокращаем заголовки */
+            .shs-enhanced #sched-table thead th:nth-child(1) { width: 50px; text-align: center; }
+            .shs-enhanced #sched-table thead th:nth-child(2) { font-size: 0.9rem; }
+            .shs-enhanced #sched-table thead th:nth-child(3) { font-size: 0.85rem; color: #6c757d; }
+
+            /* В ячейках — меньше внутреннего отступа, компактно */
+            .shs-enhanced #sched-table td {
+                font-size: 0.95rem !important;
+            }
+
+            /* Для дисциплин — оставляем стек-карточки (уже ниже) */
+        }
+
+        /* ===== 📱 ТЕЛЕФОНЫ: ВТОРАЯ ТАБЛИЦА (дисциплины) — СТЕК-КАРТОЧКИ ===== */
+        @media (max-width: 768px) {
             .shs-enhanced #disciplines-table td:first-child::before {
-                content: "№ ";
+                content: "# ";
                 font-weight: bold;
                 color: #6c757d;
             }
             .shs-enhanced #disciplines-table td:nth-child(2)::before {
-                content: "Дисциплина: ";
+                content: "📚 ";
                 font-weight: bold;
-                color: #6c757d;
+                color: #495057;
             }
             .shs-enhanced #disciplines-table td:nth-child(3)::before {
-                content: "Преподаватель: ";
+                content: "👨‍🏫 ";
                 font-weight: bold;
                 color: #6c757d;
             }
             .shs-enhanced #disciplines-table td {
                 display: block !important;
-                padding-left: 60px !important;
-                text-indent: -45px !important;
+                padding-left: 50px !important;
+                text-indent: -35px !important;
+                font-size: 0.95rem !important;
             }
             .shs-enhanced #disciplines-table tr {
                 display: block !important;
-                margin-bottom: 0.8rem !important;
+                margin-bottom: 0.7rem !important;
                 border: 1px solid #eee !important;
-                padding: 8px !important;
+                padding: 6px !important;
                 border-radius: 6px !important;
             }
             .shs-enhanced #disciplines-table tbody tr:hover {
@@ -213,6 +247,12 @@
             margin: 20px 0 10px 0 !important;
             padding-bottom: 5px !important;
             border-bottom: 2px solid #007bff !important;
+        }
+
+        @media (min-width: 1200px) {
+            .shs-enhanced h2 {
+                font-size: 1.5rem !important;
+            }
         }
 
         /* ===== БЛОК ДИСЦИПЛИН ===== */
@@ -259,7 +299,7 @@
             border: none !important;
         }
 
-        /* ===== КОМПАКТНОЕ МЕНЮ НАСТРОЕК (под шестерёнкой) ===== */
+        /* ===== МЕНЮ НАСТРОЕК ===== */
         .shs-enhanced .settings-menu {
             position: absolute;
             background: white !important;
@@ -401,16 +441,16 @@
             background: #4a86e8 !important;
         }
 
-        /* ===== МОБИЛЬНЫЕ УСТРОЙСТВА: ДОП УЛУЧШЕНИЯ ===== */
+        /* ===== 📱 ДОП: ТЕЛЕФОНЫ — БОЛЬШЕ ТЕКСТА, МЕНЬШЕ ПРОСТРАНСТВА ===== */
         @media (max-width: 480px) {
             .shs-enhanced body {
-                font-size: 15px !important;
+                font-size: 16px !important; /* ↑ читаемость */
             }
             .shs-enhanced .menu-toggle {
-                font-size: 1.3rem !important;
+                font-size: 1.4rem !important;
             }
             .shs-enhanced .disciplines-header {
-                font-size: 1.25rem !important;
+                font-size: 1.3rem !important;
                 padding: 10px !important;
             }
             .shs-enhanced .settings-menu {
@@ -580,6 +620,11 @@
             h2Disc.replaceWith(wrapper);
             discTable.id = 'disciplines-table';
 
+            // Присваиваем ID первой таблице — для стилей!
+            if (DOM.tables[0]) {
+                DOM.tables[0].id = 'sched-table';
+            }
+
             let isHidden = localStorage.getItem('shs-disc-hidden') === 'true';
             if (isHidden) {
                 discTable.classList.add('hidden');
@@ -604,7 +649,6 @@
             init() {
                 if (!DOM.navbarRight) return;
 
-                // Создаём компактное меню
                 this.menu = document.createElement('div');
                 this.menu.className = 'settings-menu';
                 this.menu.innerHTML = `
@@ -616,7 +660,6 @@
                 `;
                 document.body.appendChild(this.menu);
 
-                // Шестерёнка
                 const gearLi = document.createElement('li');
                 const gearLink = document.createElement('a');
                 gearLink.href = '#';
@@ -629,12 +672,10 @@
                 if (exitLi) DOM.navbarRight.insertBefore(gearLi, exitLi);
                 else DOM.navbarRight.appendChild(gearLi);
 
-                // Тема
                 let theme = localStorage.getItem('shs-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
                 document.body.setAttribute('data-theme', theme);
                 if (theme === 'dark') $('#theme-switch', this.menu).classList.add('checked');
 
-                // Переключение
                 const toggleTheme = () => {
                     const el = $('#theme-switch', this.menu);
                     const isDark = !el.classList.contains('checked');
@@ -646,7 +687,6 @@
 
                 $('#theme-row', this.menu).onclick = toggleTheme;
 
-                // Показ/скрытие с адаптивным позиционированием ✅
                 gearLink.onclick = e => {
                     e.preventDefault();
                     const wasVisible = this.menu.style.display === 'block';
@@ -668,14 +708,12 @@
                     }
                 };
 
-                // Закрытие по клику вне
                 document.addEventListener('click', e => {
                     if (!this.menu.contains(e.target) && e.target !== gearLink) {
                         this.menu.style.display = 'none';
                     }
                 });
 
-                // По Escape
                 document.addEventListener('keydown', e => {
                     if (e.key === 'Escape') this.menu.style.display = 'none';
                 });

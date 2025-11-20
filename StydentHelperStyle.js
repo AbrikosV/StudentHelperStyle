@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         Student Helper Style
+// @name        Student Helper Style
 // @namespace    https://github.com/AbrikosV/StudentHelperStyle
-// @version      1.5.2
+// @version      1.5.4
 // @description  Улучшенный интерфейс расписания для студентов колледжа
 // @author       AbrikosV
 // @match        https://system.fgoupsk.ru/student/*
@@ -16,7 +16,7 @@
     'use strict';
 
     // === 🛑 Защита от дублей и запуска на странице входа ===
-    const SCRIPT_ID = 'student-helper-stylett-v1.5.1';
+    const SCRIPT_ID = 'student-helper-stylett-v1.5.2';
     if (document.getElementById(SCRIPT_ID)) return;
 
     if (
@@ -33,7 +33,6 @@
 
     // === 🎨 СТИЛИ ===
     const style = document.createElement('style');
-       
     style.textContent = `
         /* ===== ГЛОБАЛЬНЫЕ СТИЛИ ===== */
         .shs-enhanced body {
@@ -44,17 +43,14 @@
             margin: 0 !important;
             padding: 0 !important;
             overflow-x: hidden !important;
-            f
         }
 
-        /* ===== КОНТЕЙНЕРЫ ===== */
         .shs-enhanced > :not(script):not(style):not(head):not(meta):not(title) {
             max-width: 1200px !important;
             margin: 16px auto !important;
             padding: 0 12px !important;
         }
 
-        /* 🖥️ ПК (≥1200px) — расширяем контейнер до 1800px */
         @media (min-width: 1200px) {
             .shs-enhanced > :not(script):not(style):not(head):not(meta):not(title) {
                 max-width: 1800px !important;
@@ -132,7 +128,7 @@
             }
         }
 
-                /* ===== ОБЩИЕ СТИЛИ ТАБЛИЦ ===== */
+        /* ===== ОБЩИЕ СТИЛИ ТАБЛИЦ ===== */
         .shs-enhanced table.table {
             width: 100% !important;
             border-collapse: collapse !important;
@@ -168,23 +164,50 @@
             background: #f8f9fa !important;
         }
 
-        .shs-enhanced table.table td {
+        /* ✅ БАЗОВЫЙ РАЗМЕР — 14px (ПК) */
+        .shs-enhanced table.table td,
+        .shs-enhanced table.table th {
             padding: 12px 14px !important;
             color: #212529 !important;
             vertical-align: top !important;
-            font-size: 1.05rem !important; /* ↑ базовый размер */
+            font-size: 14px !important;
+            line-height: 1.4 !important;
         }
 
-        /* 🖥️ ПК (≥1200px): ещё крупнее */
+        /* 📱 ТЕЛЕФОНЫ (<768px): 18px */
+        @media (max-width: 767px) {
+            .shs-enhanced table.table td,
+            .shs-enhanced table.table th {
+                font-size: 18px !important;
+                padding: 10px 12px !important;
+                line-height: 1.35 !important;
+            }
+
+            /* Слегка сужаем первую колонку (№) */
+            .shs-enhanced #sched-table thead th:first-child,
+            .shs-enhanced #sched-table td:first-child {
+                min-width: 36px !important;
+                text-align: center !important;
+                padding-left: 6px !important;
+                padding-right: 6px !important;
+            }
+
+            /* В стек-карточках — убираем отступы под заголовками */
+            .shs-enhanced #disciplines-table td {
+                padding-left: 48px !important;
+                text-indent: -32px !important;
+            }
+        }
+
+        /* 🖥️ ПК (≥1200px): чуть больше отступов под 14px */
         @media (min-width: 1200px) {
             .shs-enhanced table.table td,
             .shs-enhanced table.table th {
-                padding: 16px 18px !important;
-                font-size: 1.15rem !important;
+                padding: 14px 16px !important;
             }
             .shs-enhanced table.table thead th {
-                padding: 16px 18px !important;
-                font-size: 1.2rem !important;
+                padding: 14px 16px !important;
+                font-size: 14px !important;
             }
             .shs-enhanced table.table {
                 overflow-x: visible !important;
@@ -192,54 +215,22 @@
             }
         }
 
-        /* 📱 ТЕЛЕФОНЫ (≤480px): первая таблица — чуть компактнее, но текст крупнее */
-        @media (max-width: 480px) {
-            .shs-enhanced #sched-table td,
-            .shs-enhanced #sched-table th {
-                padding: 8px 10px !important;
-                font-size: 1.0rem !important;
-            }
-
-            .shs-enhanced #sched-table thead th:nth-child(1) { width: 50px; text-align: center; }
-            .shs-enhanced #sched-table thead th:nth-child(2) { font-size: 1.05rem !important; }
-            .shs-enhanced #sched-table thead th:nth-child(3) { font-size: 0.95rem !important; color: #6c757d; }
+        /* ===== ЗАГОЛОВКИ ===== */
+        .shs-enhanced h2 {
+            font-size: 1.3rem !important;
+            font-weight: 600 !important;
+            color: #2c3e50 !important;
+            margin: 20px 0 10px 0 !important;
+            padding-bottom: 5px !important;
+            border-bottom: 2px solid #007bff !important;
         }
 
-        /* 📱 ТЕЛЕФОНЫ: вторая таблица (дисциплины) — стек-карточки, текст 1.05rem */
-        @media (max-width: 768px) {
-            .shs-enhanced #disciplines-table td:first-child::before {
-                content: "# ";
-                font-weight: bold;
-                color: #6c757d;
-            }
-            .shs-enhanced #disciplines-table td:nth-child(2)::before {
-                content: "📚 ";
-                font-weight: bold;
-                color: #495057;
-            }
-            .shs-enhanced #disciplines-table td:nth-child(3)::before {
-                content: "👨‍🏫 ";
-                font-weight: bold;
-                color: #6c757d;
-            }
-            .shs-enhanced #disciplines-table td {
-                display: block !important;
-                padding-left: 50px !important;
-                text-indent: -35px !important;
-                font-size: 1.05rem !important; /* ↑ */
-                line-height: 1.4 !important;
-            }
-            .shs-enhanced #disciplines-table tr {
-                display: block !important;
-                margin-bottom: 0.8rem !important;
-                border: 1px solid #eee !important;
-                padding: 8px !important;
-                border-radius: 6px !important;
-            }
-            .shs-enhanced #disciplines-table tbody tr:hover {
-                background: #f9f9f9 !important;
+        @media (min-width: 1200px) {
+            .shs-enhanced h2 {
+                font-size: 1.5rem !important;
             }
         }
+
         /* ===== БЛОК ДИСЦИПЛИН ===== */
         .shs-enhanced .disciplines-header {
             display: flex !important;
@@ -455,6 +446,39 @@
             }
         }
     `;
+    document.head.appendChild(style);
+
+    // === 🧰 ХЕЛПЕРЫ ===
+    const $ = (sel, ctx = document) => ctx.querySelector(sel);
+    const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
+
+    const formatDate = d => {
+        const dd = String(d.getDate()).padStart(2, '0');
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        return `${dd}.${mm}.${d.getFullYear()}`;
+    };
+
+    const parseDate = str => {
+        const [d, m, y] = str.split('.').map(Number);
+        return new Date(y, m - 1, d);
+    };
+
+    // === 📦 КЕШИРОВАНИЕ DOM ===
+    const DOM = {
+        dateInput: null,
+        searchBtn: null,
+        tables: [],
+        navbarRight: null,
+        h2s: [],
+        init() {
+            this.dateInput = $('input[name="d"]');
+            this.searchBtn = $('.btn-primary[type="submit"]');
+            this.tables = $$('table.table.table-striped');
+            this.navbarRight = $('.navbar-nav.navbar-right');
+            this.h2s = $$('h2');
+            return this.dateInput && this.searchBtn;
+        }
+    };
 
     // === МОДУЛИ ===
     const modules = {
@@ -674,18 +698,38 @@
     };
 
     // === 🚀 ЗАПУСК ===
+        // === 🚀 ЗАПУСК ===
     function main() {
-        if (!DOM.init()) return;
+        console.log('[SHS] Запуск Student Helper Style v1.5.2');
+
+        if (!DOM.init()) {
+            console.warn('[SHS] ❌ Не найдены ключевые элементы: input[name="d"] или кнопка поиска. Скрипт отключен.');
+            return;
+        }
+
+        console.log('[SHS] ✅ DOM инициализирован:', {
+            dateInput: DOM.dateInput ? '✅' : '❌',
+            searchBtn: DOM.searchBtn ? '✅' : '❌',
+            tables: DOM.tables.length,
+            navbarRight: DOM.navbarRight ? '✅' : '❌'
+        });
 
         document.body.classList.add('shs-enhanced');
 
         try {
             modules.uiCleanup();
+            console.log('[SHS] ✅ uiCleanup');
             modules.dateNavigation();
+            console.log('[SHS] ✅ dateNavigation');
             modules.disciplinesToggler();
+            console.log('[SHS] ✅ disciplinesToggler');
             modules.settingsMenu.init();
+            console.log('[SHS] ✅ settingsMenu');
+
+            console.log('[SHS] 🎉 Student Helper Style v1.5.2 успешно применён');
         } catch (err) {
-            console.warn('[StudentHelperStyleTT] Ошибка:', err);
+            console.error('[SHS] ❌ Ошибка при запуске:', err);
+            // Даже при ошибке — оставим стили, если они уже вставлены
         }
     }
 

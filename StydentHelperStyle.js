@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Student Helper StyleTT
+// @name         Student Helper Style
 // @namespace    https://github.com/AbrikosV/StudentHelperStyle
 // @version      1.3.0
 // @description  Улучшенный интерфейс расписания для студентов ФГОУПСК

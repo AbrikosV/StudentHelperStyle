@@ -63,7 +63,7 @@
 
 ## 📦 Полный код
 
-> ⚠️ Не копируйте отсюда — используйте **[готовый файл](https://github.com/angelina-maseevskaya/fgoupsk-schedule-enhancer/raw/main/fgoupsk-schedule-enhancer.user.js)**  
+> ⚠️ Не копируйте отсюда — используйте **[готовый файл](https://github.com/AbrikosV/StudentHelperStyle/blob/main/StydentHelperStyle.js)**  
 
 
 Для быстрого старта — [нажмите, чтобы установить скрипт одним кликом](javascript:(function(){/* ... */})()) *(только после настройки Violentmonkey)*.

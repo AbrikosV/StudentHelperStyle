@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name        Student Helper Style
+// @name         Student Helper Style
 // @namespace    https://github.com/AbrikosV/StudentHelperStyle
-// @version      1.5.4
+// @version      1.5.5
 // @description  Улучшенный интерфейс расписания для студентов колледжа
 // @author       AbrikosV
 // @match        https://system.fgoupsk.ru/student/*
@@ -15,10 +15,11 @@
 (function () {
     'use strict';
 
-    // === 🛑 Защита от дублей и запуска на странице входа ===
-    const SCRIPT_ID = 'student-helper-stylett-v1.5.2';
+    // === 🛑 Защита от дублей ===
+    const SCRIPT_ID = 'student-helper-stylett-v1.5.5';
     if (document.getElementById(SCRIPT_ID)) return;
 
+    // На странице входа — только "регистрация" и "вход"
     if (
         document.body.textContent.includes('регистрация') &&
         document.body.textContent.includes('вход') &&
@@ -183,7 +184,6 @@
                 line-height: 1.35 !important;
             }
 
-            /* Слегка сужаем первую колонку (№) */
             .shs-enhanced #sched-table thead th:first-child,
             .shs-enhanced #sched-table td:first-child {
                 min-width: 36px !important;
@@ -192,14 +192,13 @@
                 padding-right: 6px !important;
             }
 
-            /* В стек-карточках — убираем отступы под заголовками */
             .shs-enhanced #disciplines-table td {
                 padding-left: 48px !important;
                 text-indent: -32px !important;
             }
         }
 
-        /* 🖥️ ПК (≥1200px): чуть больше отступов под 14px */
+        /* 🖥️ ПК (≥1200px): чуть больше отступов */
         @media (min-width: 1200px) {
             .shs-enhanced table.table td,
             .shs-enhanced table.table th {
@@ -417,7 +416,7 @@
             background: #4a86e8 !important;
         }
 
-        /* ===== 📱 ДОП: ТЕЛЕФОНЫ — БОЛЬШЕ ТЕКСТА, МЕНЬШЕ ПРОСТРАНСТВА ===== */
+        /* ===== 📱 ТЕЛЕФОНЫ — ДОП ===== */
         @media (max-width: 480px) {
             .shs-enhanced body {
                 font-size: 16px !important;
@@ -463,6 +462,25 @@
         return new Date(y, m - 1, d);
     };
 
+    // === 🌙 ЦЕНТРАЛИЗОВАННОЕ УПРАВЛЕНИЕ ТЕМОЙ ===
+    function applyTheme() {
+        const saved = localStorage.getItem('shs-theme');
+        const systemPrefersDark = matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = saved
+            ? saved
+            : systemPrefersDark ? 'dark' : 'light';
+
+        document.body.setAttribute('data-theme', theme);
+
+        // Синхронизируем свитч, если он уже создан
+        const switchEl = document.getElementById('theme-switch');
+        if (switchEl) {
+            switchEl.classList.toggle('checked', theme === 'dark');
+        }
+
+        return theme;
+    }
+
     // === 📦 КЕШИРОВАНИЕ DOM ===
     const DOM = {
         dateInput: null,
@@ -483,18 +501,15 @@
     // === МОДУЛИ ===
     const modules = {
         uiCleanup() {
-            // Удаляем "Расписание" и <hr>
             const h2Schedule = DOM.h2s.find(h => /расписан/i.test(h.textContent));
             if (h2Schedule) {
                 h2Schedule.remove();
                 const nextHR = h2Schedule.nextElementSibling;
                 if (nextHR?.tagName === 'HR') nextHR.remove();
             }
-            // Удаляем "полное расписание"
             const fullLink = $('a[href*="page=r"]');
             if (fullLink) fullLink.remove();
 
-            // ✅ ФИКС: Обновляем ссылку "Группа" → act2=prog
             const groupLink = $('a[href*="act=group"]:not([href*="act2="])');
             if (groupLink) {
                 try {
@@ -503,7 +518,7 @@
                     groupLink.href = url.toString();
                     groupLink.title = 'Программа обучения группы';
                 } catch (e) {
-                    console.warn('[StudentHelperStyleTT] Не удалось обновить ссылку "Группа":', e);
+                    console.warn('[SHS] Не удалось обновить ссылку "Группа":', e);
                 }
             }
         },
@@ -596,7 +611,6 @@
             h2Disc.replaceWith(wrapper);
             discTable.id = 'disciplines-table';
 
-            // Присваиваем ID первой таблице — для стилей!
             if (DOM.tables[0]) {
                 DOM.tables[0].id = 'sched-table';
             }
@@ -648,17 +662,20 @@
                 if (exitLi) DOM.navbarRight.insertBefore(gearLi, exitLi);
                 else DOM.navbarRight.appendChild(gearLi);
 
-                let theme = localStorage.getItem('shs-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-                document.body.setAttribute('data-theme', theme);
-                if (theme === 'dark') $('#theme-switch', this.menu).classList.add('checked');
+                // Синхронизация темы при открытии меню
+                const syncSwitch = () => {
+                    const switchEl = $('#theme-switch', this.menu);
+                    const isDark = document.body.getAttribute('data-theme') === 'dark';
+                    switchEl?.classList.toggle('checked', isDark);
+                };
+                syncSwitch();
 
                 const toggleTheme = () => {
-                    const el = $('#theme-switch', this.menu);
-                    const isDark = !el.classList.contains('checked');
-                    el.classList.toggle('checked', isDark);
-                    theme = isDark ? 'dark' : 'light';
-                    document.body.setAttribute('data-theme', theme);
-                    localStorage.setItem('shs-theme', theme);
+                    const switchEl = $('#theme-switch', this.menu);
+                    const isDark = !switchEl.classList.contains('checked');
+                    switchEl.classList.toggle('checked', isDark);
+                    localStorage.setItem('shs-theme', isDark ? 'dark' : 'light');
+                    document.body.setAttribute('data-theme', isDark ? 'dark' : 'light');
                 };
 
                 $('#theme-row', this.menu).onclick = toggleTheme;
@@ -669,15 +686,14 @@
                     this.menu.style.display = wasVisible ? 'none' : 'block';
 
                     if (!wasVisible) {
+                        syncSwitch(); // на случай, если тема изменилась вне меню
                         const rect = gearLink.getBoundingClientRect();
                         const menuRect = this.menu.getBoundingClientRect();
-
                         let left = rect.left + rect.width / 2 - menuRect.width / 2;
                         if (left < 8) left = 8;
                         if (left + menuRect.width > window.innerWidth - 8) {
                             left = window.innerWidth - menuRect.width - 8;
                         }
-
                         this.menu.style.left = `${left}px`;
                         this.menu.style.top = `${rect.bottom + 4}px`;
                         this.menu.style.transform = 'none';
@@ -698,38 +714,21 @@
     };
 
     // === 🚀 ЗАПУСК ===
-        // === 🚀 ЗАПУСК ===
     function main() {
-        console.log('[SHS] Запуск Student Helper Style v1.5.2');
-
-        if (!DOM.init()) {
-            console.warn('[SHS] ❌ Не найдены ключевые элементы: input[name="d"] или кнопка поиска. Скрипт отключен.');
-            return;
-        }
-
-        console.log('[SHS] ✅ DOM инициализирован:', {
-            dateInput: DOM.dateInput ? '✅' : '❌',
-            searchBtn: DOM.searchBtn ? '✅' : '❌',
-            tables: DOM.tables.length,
-            navbarRight: DOM.navbarRight ? '✅' : '❌'
-        });
+        if (!DOM.init()) return;
 
         document.body.classList.add('shs-enhanced');
 
+        // ✅ Применяем тему ДО всего — гарантируем, что она работает всегда
+        applyTheme();
+
         try {
             modules.uiCleanup();
-            console.log('[SHS] ✅ uiCleanup');
             modules.dateNavigation();
-            console.log('[SHS] ✅ dateNavigation');
             modules.disciplinesToggler();
-            console.log('[SHS] ✅ disciplinesToggler');
             modules.settingsMenu.init();
-            console.log('[SHS] ✅ settingsMenu');
-
-            console.log('[SHS] 🎉 Student Helper Style v1.5.2 успешно применён');
         } catch (err) {
-            console.error('[SHS] ❌ Ошибка при запуске:', err);
-            // Даже при ошибке — оставим стили, если они уже вставлены
+            console.error('[SHS] Ошибка:', err);
         }
     }
 

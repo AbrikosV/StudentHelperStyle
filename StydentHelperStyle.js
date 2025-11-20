@@ -33,6 +33,7 @@
 
     // === 🎨 СТИЛИ ===
     const style = document.createElement('style');
+       
     style.textContent = `
         /* ===== ГЛОБАЛЬНЫЕ СТИЛИ ===== */
         .shs-enhanced body {
@@ -45,15 +46,18 @@
             overflow-x: hidden !important;
         }
 
+        /* ===== КОНТЕЙНЕРЫ ===== */
         .shs-enhanced > :not(script):not(style):not(head):not(meta):not(title) {
             max-width: 1200px !important;
             margin: 16px auto !important;
             padding: 0 12px !important;
         }
 
-        @media (min-width: 1440px) {
+        /* 🖥️ ПК (≥1200px) — расширяем контейнер до 1800px */
+        @media (min-width: 1200px) {
             .shs-enhanced > :not(script):not(style):not(head):not(meta):not(title) {
-                max-width: 1400px !important;
+                max-width: 1800px !important;
+                padding: 0 20px !important;
             }
         }
 
@@ -170,20 +174,25 @@
             font-size: 0.95rem !important;
         }
 
-        /* ===== 🖥️ БОЛЬШИЕ ЭКРАНЫ (≥1440px) ===== */
-        @media (min-width: 1440px) {
+        /* 🖥️ ПК (≥1200px): Увеличиваем шрифт и отступы */
+        @media (min-width: 1200px) {
             .shs-enhanced table.table td,
             .shs-enhanced table.table th {
-                padding: 12px 14px !important;
+                padding: 14px 16px !important;
                 font-size: 1.05rem !important;
             }
             .shs-enhanced table.table thead th {
-                padding: 12px 14px !important;
+                padding: 14px 16px !important;
                 font-size: 1.1rem !important;
+            }
+            /* Убираем горизонтальный скролл при широких таблицах */
+            .shs-enhanced table.table {
+                overflow-x: visible !important;
+                width: 100% !important;
             }
         }
 
-        /* ===== 📱 ТЕЛЕФОНЫ (≤480px): ПЕРВАЯ ТАБЛИЦА (расписание) — КОМПАКТНЕЕ ===== */
+        /* 📱 ТЕЛЕФОНЫ (≤480px): ПЕРВАЯ ТАБЛИЦА — КОМПАКТНЕЕ */
         @media (max-width: 480px) {
             .shs-enhanced #sched-table td,
             .shs-enhanced #sched-table th {
@@ -191,20 +200,16 @@
                 font-size: 0.92rem !important;
             }
 
-            /* Сокращаем заголовки */
             .shs-enhanced #sched-table thead th:nth-child(1) { width: 50px; text-align: center; }
             .shs-enhanced #sched-table thead th:nth-child(2) { font-size: 0.9rem; }
             .shs-enhanced #sched-table thead th:nth-child(3) { font-size: 0.85rem; color: #6c757d; }
 
-            /* В ячейках — меньше внутреннего отступа, компактно */
             .shs-enhanced #sched-table td {
                 font-size: 0.95rem !important;
             }
-
-            /* Для дисциплин — оставляем стек-карточки (уже ниже) */
         }
 
-        /* ===== 📱 ТЕЛЕФОНЫ: ВТОРАЯ ТАБЛИЦА (дисциплины) — СТЕК-КАРТОЧКИ ===== */
+        /* 📱 ТЕЛЕФОНЫ: ВТОРАЯ ТАБЛИЦА — СТЕК-КАРТОЧКИ */
         @media (max-width: 768px) {
             .shs-enhanced #disciplines-table td:first-child::before {
                 content: "# ";
@@ -444,7 +449,7 @@
         /* ===== 📱 ДОП: ТЕЛЕФОНЫ — БОЛЬШЕ ТЕКСТА, МЕНЬШЕ ПРОСТРАНСТВА ===== */
         @media (max-width: 480px) {
             .shs-enhanced body {
-                font-size: 16px !important; /* ↑ читаемость */
+                font-size: 16px !important;
             }
             .shs-enhanced .menu-toggle {
                 font-size: 1.4rem !important;
@@ -470,39 +475,6 @@
             }
         }
     `;
-    document.head.appendChild(style);
-
-    // === 🧰 ХЕЛПЕРЫ ===
-    const $ = (sel, ctx = document) => ctx.querySelector(sel);
-    const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
-
-    const formatDate = d => {
-        const dd = String(d.getDate()).padStart(2, '0');
-        const mm = String(d.getMonth() + 1).padStart(2, '0');
-        return `${dd}.${mm}.${d.getFullYear()}`;
-    };
-
-    const parseDate = str => {
-        const [d, m, y] = str.split('.').map(Number);
-        return new Date(y, m - 1, d);
-    };
-
-    // === 📦 КЕШИРОВАНИЕ DOM ===
-    const DOM = {
-        dateInput: null,
-        searchBtn: null,
-        tables: [],
-        navbarRight: null,
-        h2s: [],
-        init() {
-            this.dateInput = $('input[name="d"]');
-            this.searchBtn = $('.btn-primary[type="submit"]');
-            this.tables = $$('table.table.table-striped');
-            this.navbarRight = $('.navbar-nav.navbar-right');
-            this.h2s = $$('h2');
-            return this.dateInput && this.searchBtn;
-        }
-    };
 
     // === МОДУЛИ ===
     const modules = {

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Student Helper Style
 // @namespace    https://github.com/AbrikosV/StudentHelperStyle
-// @version      1.5.5
+// @version      1.5.6
 // @description  Улучшенный интерфейс расписания для студентов колледжа
 // @author       AbrikosV
 // @match        https://system.fgoupsk.ru/student/*
@@ -16,7 +16,7 @@
     'use strict';
 
     // === 🛑 Защита от дублей ===
-    const SCRIPT_ID = 'student-helper-stylett-v1.5.5';
+    const SCRIPT_ID = 'student-helper-stylett-v1.5.6';
     if (document.getElementById(SCRIPT_ID)) return;
 
     // На странице входа — только "регистрация" и "вход"
@@ -472,7 +472,6 @@
 
         document.body.setAttribute('data-theme', theme);
 
-        // Синхронизируем свитч, если он уже создан
         const switchEl = document.getElementById('theme-switch');
         if (switchEl) {
             switchEl.classList.toggle('checked', theme === 'dark');
@@ -541,12 +540,8 @@
                     if (i === 1) d.setTime(Date.now());
                     DOM.dateInput.value = formatDate(d);
 
-                    const form = DOM.dateInput.closest('form');
-                    if (form) {
-                        form.dispatchEvent(new Event('submit', { bubbles: true }));
-                    } else {
-                        window.location.search = `?mode=ucheba&d=${encodeURIComponent(DOM.dateInput.value)}`;
-                    }
+                    // ✅ ИСПРАВЛЕНО: клик по реальной кнопке — работает на всех устройствах
+                    DOM.searchBtn.click();
                 };
 
                 ctrl.appendChild(btn);
@@ -554,8 +549,9 @@
 
             DOM.searchBtn.parentNode.insertBefore(ctrl, DOM.searchBtn.nextSibling);
 
+            // Поддержка Enter (и Ctrl+Enter для ПК)
             DOM.dateInput.addEventListener('keydown', e => {
-                if (e.ctrlKey && e.key === 'Enter') {
+                if (e.key === 'Enter' || (e.ctrlKey && e.key === 'Enter')) {
                     e.preventDefault();
                     DOM.searchBtn.click();
                 }
@@ -662,7 +658,6 @@
                 if (exitLi) DOM.navbarRight.insertBefore(gearLi, exitLi);
                 else DOM.navbarRight.appendChild(gearLi);
 
-                // Синхронизация темы при открытии меню
                 const syncSwitch = () => {
                     const switchEl = $('#theme-switch', this.menu);
                     const isDark = document.body.getAttribute('data-theme') === 'dark';
@@ -686,7 +681,7 @@
                     this.menu.style.display = wasVisible ? 'none' : 'block';
 
                     if (!wasVisible) {
-                        syncSwitch(); // на случай, если тема изменилась вне меню
+                        syncSwitch();
                         const rect = gearLink.getBoundingClientRect();
                         const menuRect = this.menu.getBoundingClientRect();
                         let left = rect.left + rect.width / 2 - menuRect.width / 2;
@@ -719,7 +714,6 @@
 
         document.body.classList.add('shs-enhanced');
 
-        // ✅ Применяем тему ДО всего — гарантируем, что она работает всегда
         applyTheme();
 
         try {

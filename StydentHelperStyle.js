@@ -44,6 +44,7 @@
             margin: 0 !important;
             padding: 0 !important;
             overflow-x: hidden !important;
+            f
         }
 
         /* ===== КОНТЕЙНЕРЫ ===== */
@@ -131,7 +132,7 @@
             }
         }
 
-        /* ===== ОБЩИЕ СТИЛИ ТАБЛИЦ ===== */
+                /* ===== ОБЩИЕ СТИЛИ ТАБЛИЦ ===== */
         .shs-enhanced table.table {
             width: 100% !important;
             border-collapse: collapse !important;
@@ -149,7 +150,7 @@
             background: #f8f9fa !important;
             color: #495057 !important;
             font-weight: 600 !important;
-            padding: 10px 12px !important;
+            padding: 12px 14px !important;
             text-align: left !important;
             border-bottom: 2px solid #dee2e6 !important;
             white-space: nowrap !important;
@@ -168,48 +169,43 @@
         }
 
         .shs-enhanced table.table td {
-            padding: 10px 12px !important;
+            padding: 12px 14px !important;
             color: #212529 !important;
             vertical-align: top !important;
-            font-size: 0.95rem !important;
+            font-size: 1.05rem !important; /* ↑ базовый размер */
         }
 
-        /* 🖥️ ПК (≥1200px): Увеличиваем шрифт и отступы */
+        /* 🖥️ ПК (≥1200px): ещё крупнее */
         @media (min-width: 1200px) {
             .shs-enhanced table.table td,
             .shs-enhanced table.table th {
-                padding: 14px 16px !important;
-                font-size: 1.05rem !important;
+                padding: 16px 18px !important;
+                font-size: 1.15rem !important;
             }
             .shs-enhanced table.table thead th {
-                padding: 14px 16px !important;
-                font-size: 1.1rem !important;
+                padding: 16px 18px !important;
+                font-size: 1.2rem !important;
             }
-            /* Убираем горизонтальный скролл при широких таблицах */
             .shs-enhanced table.table {
                 overflow-x: visible !important;
                 width: 100% !important;
             }
         }
 
-        /* 📱 ТЕЛЕФОНЫ (≤480px): ПЕРВАЯ ТАБЛИЦА — КОМПАКТНЕЕ */
+        /* 📱 ТЕЛЕФОНЫ (≤480px): первая таблица — чуть компактнее, но текст крупнее */
         @media (max-width: 480px) {
             .shs-enhanced #sched-table td,
             .shs-enhanced #sched-table th {
-                padding: 6px 8px !important;
-                font-size: 0.92rem !important;
+                padding: 8px 10px !important;
+                font-size: 1.0rem !important;
             }
 
             .shs-enhanced #sched-table thead th:nth-child(1) { width: 50px; text-align: center; }
-            .shs-enhanced #sched-table thead th:nth-child(2) { font-size: 0.9rem; }
-            .shs-enhanced #sched-table thead th:nth-child(3) { font-size: 0.85rem; color: #6c757d; }
-
-            .shs-enhanced #sched-table td {
-                font-size: 0.95rem !important;
-            }
+            .shs-enhanced #sched-table thead th:nth-child(2) { font-size: 1.05rem !important; }
+            .shs-enhanced #sched-table thead th:nth-child(3) { font-size: 0.95rem !important; color: #6c757d; }
         }
 
-        /* 📱 ТЕЛЕФОНЫ: ВТОРАЯ ТАБЛИЦА — СТЕК-КАРТОЧКИ */
+        /* 📱 ТЕЛЕФОНЫ: вторая таблица (дисциплины) — стек-карточки, текст 1.05rem */
         @media (max-width: 768px) {
             .shs-enhanced #disciplines-table td:first-child::before {
                 content: "# ";
@@ -230,36 +226,20 @@
                 display: block !important;
                 padding-left: 50px !important;
                 text-indent: -35px !important;
-                font-size: 0.95rem !important;
+                font-size: 1.05rem !important; /* ↑ */
+                line-height: 1.4 !important;
             }
             .shs-enhanced #disciplines-table tr {
                 display: block !important;
-                margin-bottom: 0.7rem !important;
+                margin-bottom: 0.8rem !important;
                 border: 1px solid #eee !important;
-                padding: 6px !important;
+                padding: 8px !important;
                 border-radius: 6px !important;
             }
             .shs-enhanced #disciplines-table tbody tr:hover {
                 background: #f9f9f9 !important;
             }
         }
-
-        /* ===== ЗАГОЛОВКИ ===== */
-        .shs-enhanced h2 {
-            font-size: 1.3rem !important;
-            font-weight: 600 !important;
-            color: #2c3e50 !important;
-            margin: 20px 0 10px 0 !important;
-            padding-bottom: 5px !important;
-            border-bottom: 2px solid #007bff !important;
-        }
-
-        @media (min-width: 1200px) {
-            .shs-enhanced h2 {
-                font-size: 1.5rem !important;
-            }
-        }
-
         /* ===== БЛОК ДИСЦИПЛИН ===== */
         .shs-enhanced .disciplines-header {
             display: flex !important;

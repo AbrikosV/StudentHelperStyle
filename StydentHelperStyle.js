@@ -392,18 +392,36 @@
     // === МОДУЛИ ===
     const modules = {
         uiCleanup() {
-            // Удаляем "Расписание" и <hr>
-            const h2Schedule = DOM.h2s.find(h => /расписан/i.test(h.textContent));
-            if (h2Schedule) {
-                h2Schedule.remove();
-                const nextHR = h2Schedule.nextElementSibling;
-                if (nextHR?.tagName === 'HR') nextHR.remove();
-            }
-            // Удаляем "полное расписание"
-            const fullLink = $('a[href*="page=r"]');
-            if (fullLink) fullLink.remove();
-        },
+    // Удаляем "Расписание" и <hr>
+    const h2Schedule = DOM.h2s.find(h => /расписан/i.test(h.textContent));
+    if (h2Schedule) {
+        h2Schedule.remove();
+        const nextHR = h2Schedule.nextElementSibling;
+        if (nextHR?.tagName === 'HR') nextHR.remove();
+    }
+    // Удаляем "полное расписание"
+    const fullLink = $('a[href*="page=r"]');
+    if (fullLink) fullLink.remove();
 
+    // ✅ ИСПРАВЛЕНИЕ: обновляем ссылку "Группа"
+    const groupLink = $('a[href*="act=group"]:not([href*="act2="])');
+    if (groupLink) {
+        try {
+            const url = new URL(groupLink.href, location.origin);
+            // Убеждаемся, что в URL есть m=... (обычно есть)
+            // Просто добавляем/заменяем act2=prog
+            url.searchParams.set('act2', 'prog');
+
+            groupLink.href = url.toString();
+            groupLink.title = 'Программа обучения группы';
+            // (опционально) можно заменить текст, но лучше оставить "Группа"
+            // groupLink.textContent = 'Программа группы';
+        } catch (e) {
+            console.warn('[StudentHelperStyleTT] Не удалось обновить ссылку "Группа":', e);
+        }
+    }
+},
+        
         dateNavigation() {
             const ctrl = document.createElement('div');
             ctrl.className = 'date-controls';

@@ -1,9 +1,15 @@
 // ==UserScript==
-// @name         Улучшенное расписание ФГОУПСК (system.fgoupsk.ru)
-// @namespace    https://github.com/angelina-maseevskaya
+// @name         Student Helper StyleTT
+// @namespace    https://github.com/AbrikosV/StudentHelperStyle
+// @version      1.3.0
+// @description  Улучшенный интерфейс расписания для студентов ФГОУПСК
+// @author       AbrikosV 
 // @match        https://system.fgoupsk.ru/student/*
 // @grant        none
 // @run-at       document-end
+// @license      MIT
+// @downloadURL  https://github.com/AbrikosV/StudentHelperStyle/raw/main/StudentHelperStyleTT.user.js
+// @updateURL    https://github.com/AbrikosV/StudentHelperStyle/raw/main/StudentHelperStyleTT.user.js
 // ==/UserScript==
 
 (function () {

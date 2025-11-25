@@ -526,7 +526,7 @@
             const ctrl = document.createElement('div');
             ctrl.className = 'date-controls';
 
-            ['←', '🏠', '→'].forEach((txt, i) => {
+            ['←', '<i class="fi fi-rr-house-blank"></i>', '→'].forEach((txt, i) => {
                 const btn = document.createElement('button');
                 btn.type = 'button';
                 btn.textContent = txt;
